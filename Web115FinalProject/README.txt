@@ -1,4 +1,4 @@
-## Self-Development Daily Tracker
+## Self-Development Daily Task Tracker
 
 A web-based task manager that helps users track daily self-improvement habits across four key areas: Mind, Body, Social, and Creative. Built using vanilla HTML, CSS, and JavaScript.
 
