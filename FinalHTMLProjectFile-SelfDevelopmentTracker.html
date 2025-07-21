@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self-Development Daily Tracker</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #96989b, #8b8c8f);
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    #taskForm {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+      margin: 0 auto 20px;
+      gap: 10px;
+    }
+    input, select, button {
+      padding: 10px;
+      font-size: 1em;
+    }
+    #taskmanager {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .task {
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+    }
+    .important {
+      border-left: 5px solid red;
+    }
+    .completed {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    .Mind { background-color: #d0e8ff; }
+    .Body { background-color: #d5fbe3; }
+    .Social { background-color: #f3e6ff; }
+    .Creative { background-color: #ffe7cc; }
+    #quote {
+      text-align: center;
+      font-style: italic;
+      margin-top: 20px;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <h1>Self-Development Tracker</h1>
+  <form id="taskForm">
+    <input type="text" id="taskName" placeholder="Enter a task" required>
+    <select id="taskType">
+      <option value="Mind">Mind</option>
+      <option value="Body">Body</option>
+      <option value="Social">Social</option>
+      <option value="Creative">Creative</option>
+    </select>
+    <select id="taskPriority">
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+    </select>
+    <label><input type="checkbox" id="isImportant"> Mark as Important</label>
+    <button type="submit">Add Task</button>
+  </form>
+
+  <div id="taskmanager"></div>
+  <div id="quote"></div>
+
+  <script>
+    const tasks = [];
+    const form = document.getElementById('taskForm');
+    const manager = document.getElementById('taskmanager');
+    const quoteBox = document.getElementById('quote');
+    const quotes = [
+      "Small steps lead to big change.",
+      "Discipline equals freedom.",
+      "Consistency is key.",
+      "You're on the right path."
+    ];
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const taskName = document.getElementById('taskName').value.trim();
+      if (!taskName) return;
+
+      const task = {
+        id: Date.now(),
+        name: taskName,
+        type: document.getElementById('taskType').value,
+        priority: document.getElementById('taskPriority').value,
+        isImportant: document.getElementById('isImportant').checked,
+        isCompleted: false,
+        date: new Date().toLocaleString()
+      };
+
+      tasks.push(task);
+      renderTasks();
+      console.log(JSON.stringify(tasks, null, 2));
+      form.reset();
+    });
+
+    function renderTasks() {
+      manager.innerHTML = '';
+      tasks.forEach(task => {
+        const div = document.createElement('div');
+        div.className = `task ${task.type}`;
+        if (task.isImportant) div.classList.add('important');
+        if (task.isCompleted) div.classList.add('completed');
+        div.innerHTML = `
+          <span><strong>${task.name}</strong><br>${task.type} • ${task.priority}<br><small>${task.date}</small></span>
+          <div>
+            <button onclick="toggleComplete(${task.id})">✅</button>
+            <button onclick="deleteTask(${task.id})">🗑️</button>
+          </div>
+        `;
+        manager.appendChild(div);
+      });
+    }
+
+    function toggleComplete(id) {
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        task.isCompleted = !task.isCompleted;
+        renderTasks();
+        showQuote();
+        console.log(JSON.stringify(tasks, null, 2));
+      }
+    }
+
+    function deleteTask(id) {
+      const index = tasks.findIndex(t => t.id === id);
+      if (index > -1) {
+        tasks.splice(index, 1);
+        renderTasks();
+        console.log(JSON.stringify(tasks, null, 2));
+      }
+    }
+
+    function showQuote() {
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      quoteBox.textContent = quote;
+      quoteBox.style.opacity = 1;
+      setTimeout(() => quoteBox.style.opacity = 0, 3000);
+    }
+  </script>
+</body>
+</html>
